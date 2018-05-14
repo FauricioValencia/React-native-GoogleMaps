@@ -16,8 +16,6 @@ import MapView from "react-native-maps";
 
 
 
-
-
 export default class App extends Component {
 
   state = {
@@ -25,7 +23,7 @@ export default class App extends Component {
       latitude:37.7900352,
       longitude:-122.4013726,
       latitudeDelta:0.0122,
-      lontitudeDelta:
+      longitudeDelta://ESCRIBIR BIEN!
         Dimensions.get("window").width
         / Dimensions.get("window").height *
         0.0122
@@ -45,7 +43,7 @@ export default class App extends Component {
       }
     })
   }
-  componentDidMount() {
+ /* componentDidMount() {
     navigator.geolocation.getCurrentPosition(
           (position) => {
               this.setState({
@@ -60,7 +58,7 @@ export default class App extends Component {
           (error) => alert(JSON.stringify(error)),
           {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
       );
-}
+}*/
   render() {
     let marker = null;
 
