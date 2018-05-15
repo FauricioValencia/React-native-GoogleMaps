@@ -10,7 +10,8 @@ import {
   StyleSheet,
   Text,
   View,
-  Dimensions
+  Dimensions,
+  Button
 } from 'react-native';
 import MapView from "react-native-maps";
 
@@ -32,6 +33,11 @@ export default class App extends Component {
   }
   pickLocationHandler = event =>{
     const coords = event.nativeEvent.coordinate;
+    this.map.animateToRegion({
+      ...this.state.focusedLocation, 
+      latitude:coords.latitude,
+      longitude:coords.longitude
+    });
     this.setState(prevState =>{
       return{
         focusedLocation: {
@@ -40,9 +46,9 @@ export default class App extends Component {
           longitude:coords.longitude
         },
         locationChosen:true
-      }
-    })
-  }
+      };
+    });
+  };
  /* componentDidMount() {
     navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -59,6 +65,33 @@ export default class App extends Component {
           {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000}
       );
 }*/
+
+getLocationHandler=()=>{
+  navigator.geolocation.getCurrentPosition( pos =>{
+    const coordsEvent ={
+      nativeEvent:{
+        coordinate:{
+          latitude:pos.coords.latitude,
+          longitude:pos.coords.longitude
+        }
+      }
+    };
+    this.pickLocationHandler(coordsEvent);
+  }, errer =>{
+    console.log(errer);
+    alert ("Rectifica que tienes activo el GPS");
+  } )
+  console.warn(this.state.focusedLocation.latitude +"latitude");
+  console.warn(this.state.focusedLocation.longitude + "lingutide");
+}
+
+elPunto =()=>{
+  if(this.state.locationChosen){
+    marker = <MapView.Marker coordinate={this.state.focusedLocation}/>;
+  }
+  console.warn(`latitud: ${this.state.focusedLocation.latitude} y longitud: ${this.state.focusedLocation.longitude}`);
+}
+
   render() {
     let marker = null;
 
@@ -69,11 +102,17 @@ export default class App extends Component {
       <View style={styles.container}>
         <MapView
         initialRegion={this.state.focusedLocation}
-        region={this.state.focusedLocation}
+        //region={this.state.focusedLocation}
         style={styles.map}
-        onPress={this.pickLocationHandler}>
+        onPress={this.pickLocationHandler}
+        ref={ref=> this.map=ref}>
         {marker}
         </MapView>
+        <View>
+          <Button title="Mi ubicación actual" onPress={this.getLocationHandler}/>
+          <Button title="El punto que elegi" onPress={this.elPunto}/>
+        {/* una idea es que se vaya pintando mientras va seleccionando en la parte de arriba */}
+        </View>
       </View>
     );
   }
